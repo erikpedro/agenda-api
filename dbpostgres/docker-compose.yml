@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-q", "-d", "postgres", "-U", "root" ]
+      timeout: 45s
+      interval: 10s
+      retries: 10
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - APP_DB_USER=postgres
+      - APP_DB_PASS=postgres
+      - APP_DB_NAME=dev
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d/
+    ports:
+      - 5432:5432
+    networks:
+      - postgres-compose-network
+
+  pgadmin-compose:
+        image: dpage/pgadmin4
+        environment:
+          PGADMIN_DEFAULT_EMAIL: "erikpedro@gmail.com"
+          PGADMIN_DEFAULT_PASSWORD: "postgres"
+        ports:
+          - "15432:80"
+        depends_on:
+          - postgres
+        networks:
+          - postgres-compose-network
+
+networks:
+  postgres-compose-network:
+    driver: bridge

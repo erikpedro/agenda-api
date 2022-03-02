@@ -21,6 +21,9 @@ public class AgendaApiApplication {
 			contato.setFavorito(false);
 			repository.save(contato);
 		};
+
+
+
 	}
 
 	public static void main(String[] args) {
